@@ -14,16 +14,16 @@ import { redisStore } from 'cache-manager-redis-yet';
   imports: [PrismaModule, RoomsModule, AuthModule, UsersModule,
     // Configure CacheManager with Redis
     CacheModule.registerAsync({
-      isGlobal: true, // Make cache module available globally
-      useFactory: async () => ({
-        store: await redisStore({
-          socket: {
-            host: '127.0.0.1',
-            port: 6379,
-          },
-        }),
-      }),
+  isGlobal: true,
+  useFactory: async () => ({
+    store: await redisStore({
+      socket: {
+        host: process.env.REDIS_HOST || '127.0.0.1',
+        port: Number(process.env.REDIS_PORT) || 6379,
+      },
     }),
+  }),
+}),
     // Configure Rate Limiting (Throttler)
     ThrottlerModule.forRoot([{
       ttl: 60000, // Time to live in milliseconds (1 minute)
